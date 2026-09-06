@@ -258,10 +258,8 @@ impl Transcriber for WhisperTranscriber {
             // Constrained auto-detection: detect from allowed set only
             let allowed = self.language.as_vec();
             tracing::debug!("Using constrained language detection from: {:?}", allowed);
-            // Only this branch needs a state (for pcm_to_mel/lang_detect below);
-            // run_full() creates its own state for the actual decode, so a state
-            // created unconditionally above this match was wasted GPU buffer
-            // allocation on every single-language/auto-detect transcription.
+            // State needed only for pcm_to_mel/lang_detect below; run_full()
+            // creates its own separate state for the actual decode.
             let mut state = self
                 .ctx
                 .create_state()
